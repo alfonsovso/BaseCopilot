@@ -23,5 +23,12 @@ namespace BaseCopilot.API.Controllers
         {
             return Ok(_taskEntry);
         }
+
+        [HttpPost]
+        public ActionResult<List<TaskEntry>> CreateTaskEntry(TaskEntry taskEntry)
+        {
+            _taskEntry.Add(taskEntry);
+            return Ok(_taskEntry);
+        }
     }
 }
