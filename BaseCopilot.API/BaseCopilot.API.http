@@ -1,0 +1,6 @@
+@BaseCopilot.API_HostAddress = http://localhost:5144
+
+GET {{BaseCopilot.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
