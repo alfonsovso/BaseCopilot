@@ -5,7 +5,7 @@ namespace BaseCopilot.API.Repositories
     public class TaskEntryRepository : ITaskEntryRepository
     {
 
-        private List<TaskEntry> _taskEntry = new List<TaskEntry>
+        private static List<TaskEntry> _taskEntry = new List<TaskEntry>
         {
             new TaskEntry
             {

@@ -1,6 +1,7 @@
 ﻿using BaseCopilot.API.Repositories;
 using BaseCopilot.Shared.Entities;
 using BaseCopilot.Shared.Models.TaskEntry;
+using Mapster;
 using System.Formats.Tar;
 
 namespace BaseCopilot.API.Services
@@ -13,37 +14,17 @@ namespace BaseCopilot.API.Services
         {
             _taskEntryRepository = taskEntryRepository;
         }
-        public List<TaskEntryResponse> CreateTaskEntry(TaskEntryCreateRequest taskEntry)
+        public List<TaskEntryResponse> CreateTaskEntry(TaskEntryCreateRequest request)
         {
-            var newEntry = new TaskEntry
-            {
-                Name = taskEntry.Name,
-                Description = taskEntry.Description,
-                Start = taskEntry.Start,
-                End = taskEntry.End,
-            };
+            var newEntry = request.Adapt<TaskEntry>();
             var result = _taskEntryRepository.CreateTaskEntry(newEntry);
-            return result.Select(t => new TaskEntryResponse
-            {
-                Id = t.Id,
-                Name = t.Name,
-                Description = t.Description,
-                Start = t.Start,
-                End = t.End
-            }).ToList();
+            return result.Adapt<List<TaskEntryResponse>>();
         }
 
         public List<TaskEntryResponse> GetAllTaskEntries()
         {
             var result = _taskEntryRepository.GetAllTaskEntries();
-            return result.Select(t => new TaskEntryResponse
-            {
-                Id = t.Id,
-                Name = t.Name,
-                Description = t.Description,
-                Start = t.Start,
-                End = t.End
-            }).ToList();
+            return result.Adapt<List<TaskEntryResponse>>();
         }
     }
 }
