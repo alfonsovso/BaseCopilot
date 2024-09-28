@@ -2,7 +2,6 @@
 using BaseCopilot.Shared.Entities;
 using BaseCopilot.Shared.Models.TaskEntry;
 using Mapster;
-using System.Formats.Tar;
 
 namespace BaseCopilot.API.Services
 {
