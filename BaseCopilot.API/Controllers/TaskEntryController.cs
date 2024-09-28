@@ -1,4 +1,7 @@
-﻿using BaseCopilot.Shared.Entities;
+﻿using BaseCopilot.API.Repositories;
+using BaseCopilot.API.Services;
+using BaseCopilot.Shared.Entities;
+using BaseCopilot.Shared.Models.TaskEntry;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BaseCopilot.API.Controllers
@@ -7,28 +10,23 @@ namespace BaseCopilot.API.Controllers
     [ApiController]
     public class TaskEntryController : ControllerBase
     {
-        private static List<TaskEntry> _taskEntry = new List<TaskEntry>
+        private readonly ITaskEntryService _taskEntryService;
+
+        public TaskEntryController(ITaskEntryService taskEntryService)
         {
-            new TaskEntry
-            {
-                Id = 1,
-                Name = "Test",
-                Description = "Test",
-                End = DateTime.Now.AddHours(1),
-            }
-        };
+            _taskEntryService = taskEntryService;
+        }
 
         [HttpGet]
-        public ActionResult<List<TaskEntry>> GetAllTaskEntries()
+        public ActionResult<List<TaskEntryResponse>> GetAllTaskEntries()
         {
-            return Ok(_taskEntry);
+            return Ok(_taskEntryService.GetAllTaskEntries());
         }
 
         [HttpPost]
-        public ActionResult<List<TaskEntry>> CreateTaskEntry(TaskEntry taskEntry)
+        public ActionResult<List<TaskEntryResponse>> CreateTaskEntry(TaskEntryCreateRequest taskEntry)
         {
-            _taskEntry.Add(taskEntry);
-            return Ok(_taskEntry);
+            return Ok(_taskEntryService.CreateTaskEntry(taskEntry));
         }
     }
 }
