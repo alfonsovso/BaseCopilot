@@ -22,8 +22,35 @@ namespace BaseCopilot.API.Repositories
             return _taskEntry;
         }
 
+        public TaskEntry? GetTaskEntryById(int id)
+        {
+            return _taskEntry.FirstOrDefault(t => t.Id == id);
+        }
+
         public List<TaskEntry> GetAllTaskEntries()
         {
+            return _taskEntry;
+        }
+
+        public List<TaskEntry>? UpdateTaskEntry(int id, TaskEntry taskEntry)
+        {
+            var entryToUpdateIndex = _taskEntry.FindIndex(t => t.Id == id);
+            if (entryToUpdateIndex == -1)
+            {
+                return null;
+            }
+            _taskEntry[entryToUpdateIndex] = taskEntry;
+            return _taskEntry;
+        }
+
+        public List<TaskEntry>? DeleteTaskEntry(int id)
+        {
+            var entryToDelete = _taskEntry.FirstOrDefault(t => t.Id == id);
+            if (entryToDelete == null)
+            {
+                return null;
+            }
+            _taskEntry.Remove(entryToDelete);
             return _taskEntry;
         }
     }
