@@ -1,9 +1,14 @@
-﻿using BaseCopilot.Shared.Entities;
-
-namespace BaseCopilot.API.Repositories
+﻿namespace BaseCopilot.API.Repositories
 {
     public class TaskEntryRepository : ITaskEntryRepository
     {
+
+        private readonly DataContext _context;
+
+        public TaskEntryRepository(DataContext context)
+        {
+            _context = context;
+        }
 
         private static List<TaskEntry> _taskEntry = new List<TaskEntry>
         {
@@ -16,42 +21,52 @@ namespace BaseCopilot.API.Repositories
             }
         };
 
-        public List<TaskEntry> CreateTaskEntry(TaskEntry taskEntry)
+        public async Task<List<TaskEntry>> CreateTaskEntry(TaskEntry taskEntry)
         {
-            _taskEntry.Add(taskEntry);
-            return _taskEntry;
+            _context.TaskEntries.Add(taskEntry);
+            await _context.SaveChangesAsync();
+            return await GetAllTaskEntries();
         }
 
-        public TaskEntry? GetTaskEntryById(int id)
+        public async Task<TaskEntry?> GetTaskEntryById(int id)
         {
-            return _taskEntry.FirstOrDefault(t => t.Id == id);
+            var taskEntry = await _context.TaskEntries.FindAsync(id);
+            return taskEntry;
         }
 
-        public List<TaskEntry> GetAllTaskEntries()
+        public async Task<List<TaskEntry>> GetAllTaskEntries()
         {
-            return _taskEntry;
+            return await _context.TaskEntries.ToListAsync(); ;
         }
 
-        public List<TaskEntry>? UpdateTaskEntry(int id, TaskEntry taskEntry)
+        public async Task<List<TaskEntry>> UpdateTaskEntry(int id, TaskEntry taskEntry)
         {
-            var entryToUpdateIndex = _taskEntry.FindIndex(t => t.Id == id);
-            if (entryToUpdateIndex == -1)
+            var dbTaskEntry = await _context.TaskEntries.FindAsync(id);
+            if (dbTaskEntry == null)
+            {
+                throw new EntityNotFoundException($"Entity with ID {id} was not found.");
+            }
+            dbTaskEntry.Name = taskEntry.Name;
+            dbTaskEntry.Description = taskEntry.Description;
+            dbTaskEntry.Start = taskEntry.Start;
+            dbTaskEntry.End = taskEntry.End;
+            dbTaskEntry.UpdatedAt = DateTime.Now;
+            await _context.SaveChangesAsync();
+
+            return await GetAllTaskEntries();
+        }
+
+        public async Task<List<TaskEntry>?> DeleteTaskEntry(int id)
+        {
+            var dbTaskEntry = await _context.TaskEntries.FindAsync(id);
+            if (dbTaskEntry == null)
             {
                 return null;
             }
-            _taskEntry[entryToUpdateIndex] = taskEntry;
-            return _taskEntry;
-        }
+            _context.TaskEntries.Remove(dbTaskEntry);
+            await _context.SaveChangesAsync();
 
-        public List<TaskEntry>? DeleteTaskEntry(int id)
-        {
-            var entryToDelete = _taskEntry.FirstOrDefault(t => t.Id == id);
-            if (entryToDelete == null)
-            {
-                return null;
-            }
-            _taskEntry.Remove(entryToDelete);
-            return _taskEntry;
+            return await GetAllTaskEntries();
         }
     }
 }

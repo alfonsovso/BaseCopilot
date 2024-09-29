@@ -1,8 +1,4 @@
-﻿using BaseCopilot.API.Repositories;
-using BaseCopilot.API.Services;
-using BaseCopilot.Shared.Entities;
-using BaseCopilot.Shared.Models.TaskEntry;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace BaseCopilot.API.Controllers
 {
@@ -17,16 +13,22 @@ namespace BaseCopilot.API.Controllers
             _taskEntryService = taskEntryService;
         }
 
-        [HttpGet]
-        public ActionResult<List<TaskEntryResponse>> GetAllTaskEntries()
+        [HttpPost]
+        public async Task<ActionResult<List<TaskEntryResponse>>> CreateTaskEntry(TaskEntryCreateRequest taskEntry)
         {
-            return Ok(_taskEntryService.GetAllTaskEntries());
+            return Ok(await _taskEntryService.CreateTaskEntry(taskEntry));
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<List<TaskEntryResponse>>> GetAllTaskEntries()
+        {
+            return Ok(await _taskEntryService.GetAllTaskEntries());
         }
 
         [HttpGet("{id}")]
-        public ActionResult<TaskEntryResponse> GetTaskEntryById(int id)
+        public async Task<ActionResult<TaskEntryResponse>> GetTaskEntryById(int id)
         {
-            var result = _taskEntryService.GetTaskEntryById(id);
+            var result = await _taskEntryService.GetTaskEntryById(id);
             if (result is null)
             {
                 return NotFound("TaskEntry with the given ID was not found.");
@@ -34,16 +36,10 @@ namespace BaseCopilot.API.Controllers
             return Ok(result);
         }
 
-        [HttpPost]
-        public ActionResult<List<TaskEntryResponse>> CreateTaskEntry(TaskEntryCreateRequest taskEntry)
-        {
-            return Ok(_taskEntryService.CreateTaskEntry(taskEntry));
-        }
-
         [HttpPut("{id}")]
-        public ActionResult<List<TaskEntryResponse>> UpdateTaskEntry(int id, TaskEntryUpdateRequest taskEntry)
+        public async Task<ActionResult<List<TaskEntryResponse>>> UpdateTaskEntry(int id, TaskEntryUpdateRequest taskEntry)
         {
-            var result = _taskEntryService.UpdateTaskEntry(id, taskEntry);
+            var result = await _taskEntryService.UpdateTaskEntry(id, taskEntry);
             if (result is null)
             {
                 return NotFound("TaskEntry with the given ID was not found.");
@@ -52,9 +48,9 @@ namespace BaseCopilot.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<List<TaskEntryResponse>> DeleteTaskEntry(int id)
+        public async Task<ActionResult<List<TaskEntryResponse>>> DeleteTaskEntry(int id)
         {
-            var result = _taskEntryService.DeleteTaskEntry(id);
+            var result = await _taskEntryService.DeleteTaskEntry(id);
             if (result is null)
             {
                 return NotFound("TaskEntry with the given ID was not found.");
