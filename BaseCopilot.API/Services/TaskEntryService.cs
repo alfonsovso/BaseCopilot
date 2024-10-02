@@ -11,7 +11,7 @@ namespace BaseCopilot.API.Services
         {
             _taskEntryRepository = taskEntryRepository;
         }
-        public async Task<List<TaskEntryResponse>> CreateTaskEntry(TaskEntryCreateRequest request)
+        public async Task<List<TaskEntryResponse>> CreateTaskEntry(ProjectCreateRequest request)
         {
             var newEntry = request.Adapt<TaskEntry>();
             var result = await _taskEntryRepository.CreateTaskEntry(newEntry);
@@ -56,6 +56,12 @@ namespace BaseCopilot.API.Services
                 return null;
             }
             return result.Adapt<List<TaskEntryResponse>>();
+        }
+
+        public async Task<List<TaskEntryByProjectResponse>> GetTaskEntriesByProjectId(int projectId)
+        {
+            var result = await _taskEntryRepository.GetTaskEntriesByProjectId(projectId);
+            return result.Adapt<List<TaskEntryByProjectResponse>>();
         }
     }
 }

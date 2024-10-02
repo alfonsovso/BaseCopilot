@@ -14,7 +14,7 @@ namespace BaseCopilot.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<List<TaskEntryResponse>>> CreateTaskEntry(TaskEntryCreateRequest taskEntry)
+        public async Task<ActionResult<List<TaskEntryResponse>>> CreateTaskEntry(ProjectCreateRequest taskEntry)
         {
             return Ok(await _taskEntryService.CreateTaskEntry(taskEntry));
         }
@@ -56,6 +56,12 @@ namespace BaseCopilot.API.Controllers
                 return NotFound("TaskEntry with the given ID was not found.");
             }
             return Ok(result);
+        }
+
+        [HttpGet("project/{projectId}")]
+        public async Task<ActionResult<List<TaskEntryByProjectResponse>>> GetTaskEntriesByProject(int projectId)
+        {
+            return Ok(await _taskEntryService.GetTaskEntriesByProjectId(projectId));
         }
     }
 }

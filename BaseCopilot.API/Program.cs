@@ -11,6 +11,8 @@ builder.Services.AddDbContext<DataContext>(options =>
 );
 builder.Services.AddScoped<ITaskEntryRepository, TaskEntryRepository>();
 builder.Services.AddScoped<ITaskEntryService, TaskEntryService>();
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
 
 var app = builder.Build();
 
@@ -20,6 +22,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+MapsterConfiguration.Configure();
 
 app.UseHttpsRedirection();
 
