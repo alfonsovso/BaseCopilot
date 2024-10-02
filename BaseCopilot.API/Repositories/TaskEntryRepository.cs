@@ -10,17 +10,6 @@
             _context = context;
         }
 
-        private static List<TaskEntry> _taskEntry = new List<TaskEntry>
-        {
-            new TaskEntry
-            {
-                Id = 1,
-                Name = "Test",
-                Description = "Test",
-                End = DateTime.Now.AddHours(1),
-            }
-        };
-
         public async Task<List<TaskEntry>> CreateTaskEntry(TaskEntry taskEntry)
         {
             _context.TaskEntries.Add(taskEntry);
@@ -30,13 +19,19 @@
 
         public async Task<TaskEntry?> GetTaskEntryById(int id)
         {
-            var taskEntry = await _context.TaskEntries.FindAsync(id);
+            var taskEntry = await _context.TaskEntries
+                .Include(te => te.Project)
+                .ThenInclude(p => p.ProjectDetails)
+                .FirstOrDefaultAsync(te => te.Id == id);
             return taskEntry;
         }
 
         public async Task<List<TaskEntry>> GetAllTaskEntries()
         {
-            return await _context.TaskEntries.ToListAsync(); ;
+            return await _context.TaskEntries
+                .Include(te => te.Project)
+                .ThenInclude(p => p.ProjectDetails)
+                .ToListAsync();
         }
 
         public async Task<List<TaskEntry>> UpdateTaskEntry(int id, TaskEntry taskEntry)
@@ -46,8 +41,7 @@
             {
                 throw new EntityNotFoundException($"Entity with ID {id} was not found.");
             }
-            dbTaskEntry.Name = taskEntry.Name;
-            dbTaskEntry.Description = taskEntry.Description;
+            dbTaskEntry.ProjectId = taskEntry.ProjectId;
             dbTaskEntry.Start = taskEntry.Start;
             dbTaskEntry.End = taskEntry.End;
             dbTaskEntry.UpdatedAt = DateTime.Now;
@@ -67,6 +61,15 @@
             await _context.SaveChangesAsync();
 
             return await GetAllTaskEntries();
+        }
+
+        public async Task<List<TaskEntry>?> GetTaskEntriesByProjectId(int projectId)
+        {
+            return await _context.TaskEntries
+                .Where(te => te.ProjectId == projectId)
+                .Include(te => te.Project)
+                .ThenInclude(p => p.ProjectDetails)
+                .ToListAsync();
         }
     }
 }

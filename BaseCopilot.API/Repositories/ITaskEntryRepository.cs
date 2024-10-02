@@ -7,5 +7,6 @@
         Task<List<TaskEntry>> GetAllTaskEntries();
         Task<List<TaskEntry>> UpdateTaskEntry(int id, TaskEntry taskEntry);
         Task<List<TaskEntry>?> DeleteTaskEntry(int id);
+        Task<List<TaskEntry>> GetTaskEntriesByProjectId(int projectId);
     }
 }

@@ -4,6 +4,7 @@ using BaseCopilot.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaseCopilot.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240929024351_ProjectsDetails")]
+    partial class ProjectsDetails
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,38 +112,6 @@ namespace BaseCopilot.API.Migrations
                     b.ToTable("TaskEntries");
                 });
 
-            modelBuilder.Entity("BaseCopilot.Shared.Entities.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("ProjectUser", b =>
-                {
-                    b.Property<int>("ProjectsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UsersId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProjectsId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("ProjectUser");
-                });
-
             modelBuilder.Entity("BaseCopilot.Shared.Entities.ProjectDetails", b =>
                 {
                     b.HasOne("BaseCopilot.Shared.Entities.Project", "Project")
@@ -159,21 +130,6 @@ namespace BaseCopilot.API.Migrations
                         .HasForeignKey("ProjectId");
 
                     b.Navigation("Project");
-                });
-
-            modelBuilder.Entity("ProjectUser", b =>
-                {
-                    b.HasOne("BaseCopilot.Shared.Entities.Project", null)
-                        .WithMany()
-                        .HasForeignKey("ProjectsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BaseCopilot.Shared.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("BaseCopilot.Shared.Entities.Project", b =>
