@@ -1,0 +1,50 @@
+﻿@page "/taskentries"
+@inject HttpClient Http
+
+<PageTitle>Task Entries</PageTitle>
+<h3>Task Entries</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Task</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Duration</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var taskEntry in taskEntries)
+        {
+            <tr>
+                <td>@taskEntry.Project.Name</td>
+                <td>@taskEntry.Start</td>
+                <td>@taskEntry.End</td>
+                <td>@GetDurartion(taskEntry.Start, taskEntry.End)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<TaskEntryResponse> taskEntries = new List<TaskEntryResponse>();
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await Http.GetFromJsonAsync<List<TaskEntryResponse>>("api/v1/taskentry");
+        if (result != null)
+        {
+            taskEntries = result;
+        }
+    }
+
+    private string GetDurartion(DateTime? start, DateTime? end)
+    {
+        if (start != null && end != null)
+        {
+            var duration = end.Value - start.Value;
+            var result = $"{duration.Hours}h {duration.Minutes}m";
+            return result;
+        }
+        return string.Empty;
+    }
+}

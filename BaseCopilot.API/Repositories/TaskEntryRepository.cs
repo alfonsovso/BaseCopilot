@@ -63,7 +63,7 @@
             return await GetAllTaskEntries();
         }
 
-        public async Task<List<TaskEntry>?> GetTaskEntriesByProjectId(int projectId)
+        public async Task<List<TaskEntry>> GetTaskEntriesByProjectId(int projectId)
         {
             return await _context.TaskEntries
                 .Where(te => te.ProjectId == projectId)
